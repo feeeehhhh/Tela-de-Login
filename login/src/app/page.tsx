@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Image from "next/image";
 import Link from 'next/link';
+import { Toaster, toast } from 'sonner'
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,12 @@ export default function Home() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  // Função para limpar os campos de email e senha
+  const clearFields = () => {
+    setEmail('');
+    setPassword('');
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -29,36 +36,43 @@ export default function Home() {
       });
 
       if (response.ok) {
-        alert('Login bem-sucedido!');
+        toast('Login Sucedido!');
+        clearFields();
         // Redirecionar ou salvar o token, se necessário
       } else {
         const errorData = await response.json();
-        alert(`Erro: ${errorData.error}`);
+        toast(`Erro: ${errorData.error}`);
+        clearFields();
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      alert('Erro ao tentar fazer login.');
+      toast('Erro ao tentar fazer login.');
+      clearFields();
     }
   };
   return (
     <div className=" bg-blue-light h-screen">
+      <div >
+        <Toaster richColors />
+      </div>
+
       <ul className="flex items-center justify-between " >
-        <li className="min-w-[500px] mx-40 py-12 space-y-6">
-          <form onSubmit={handleLogin}>
+        <li className="min-w-[500px] mx-40 py-12 ">
+          <form className='space-y-6' onSubmit={handleLogin}>
             <h1 className="text-center font-semibold text-xl">Seja Bem-Vindo</h1>
             <div>
               <label htmlFor="email">Email:</label>
               <Input
-               value={email}
-               onChange={(e) => setEmail(e.target.value)}
-               className="rounded-full  border-purple-border border-opacity-60 shadow-purple-border  shadow-2xl" id="email" type="email" />
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="rounded-full  border-purple-border border-opacity-60 shadow-purple-border  shadow-2xl" id="email" type="email" />
             </div>
             <div>
               <label htmlFor="password">Senha:</label>
-              <Input 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="rounded-full  border-purple-border border-opacity-60  shadow-purple-border  shadow-2xl" id="password" type="password" />
+              <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="rounded-full  border-purple-border border-opacity-60  shadow-purple-border  shadow-2xl" id="password" type="password" />
             </div>
             <Button type='submit' className="w-full mt-4 bg-purple-border rounded-full  text-white hover:bg-purple-light">Entrar</Button>
             <p className=" pt-5 flex justify-center">Você não tem uma conta?
@@ -87,6 +101,7 @@ export default function Home() {
         <li className="absolute bottom-0">
           <Image src={retangulo} alt="Imagem Ilustrativa" height={0} width={0} />
         </li>
+
       </ul>
 
     </div >
