@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Image from "next/image";
 import Link from 'next/link';
 import { Toaster, toast } from 'sonner'
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { motion } from 'motion/react';
 
 import desktop from '../../public/Other 03.png'
 import retangulo from '../../public/Rectangle.png'
-import google from '../../public/google-logo.svg'
+
 
 
 export default function Home() {
@@ -22,7 +23,12 @@ export default function Home() {
     setEmail('');
     setPassword('');
   };
-
+  const sucess = () => {
+    toast('Login Sucedido')
+  }
+  const error = () => {
+    toast('Falha no Login')
+  }
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -84,7 +90,14 @@ export default function Home() {
 
             <motion.a className="cursor-pointer flex  justify-center mt-4"
               whileHover={{ scale: 1.1 }}>
-              <Image src={google} alt="Google Login" height={50} width={50} />
+              
+                <GoogleOAuthProvider clientId="620987113282-5ei8hdognh4142u4tmj6s1uef5gvuevm.apps.googleusercontent.com">
+                  <GoogleLogin
+                    onSuccess={sucess}
+                    onError={error}
+                  />
+                </GoogleOAuthProvider>
+              
             </motion.a>
           </form>
 

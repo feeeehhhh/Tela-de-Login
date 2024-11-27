@@ -2,12 +2,14 @@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import { motion } from 'motion/react';
+import { Toaster, toast } from "sonner";
 import Image from "next/image";
 import Link from 'next/link';
 
-import google from '../../../public/google-logo.svg'
+
 import imagemregister from '../../../public/Group 3.png'
 import React, { FormEvent, useState } from "react";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 
 // interface para os dados dos usuários
 interface FormData {
@@ -27,6 +29,24 @@ export default function SingUp() {
         password: '',
         confirmPassword: ''
     });
+    //limpa os campos
+    const clearFields = () => {
+        setFormDataState({
+            fullName: '',
+            userName: '',
+            email: '',
+            password: '',
+            confirmPassword: ''
+        })
+    }
+    //respostas de login com o google
+    const sucess = () => {
+        toast('Login Sucedido')
+      }
+      const error = () => {
+        toast('Falha no Login')
+      }
+
 
     // Função para lidar com mudanças nos campos
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,12 +60,12 @@ export default function SingUp() {
     // Função para tratar o envio do formulário
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-    
+
         if (formDataState.password !== formDataState.confirmPassword) {
-            alert('As senhas estão diferentes');
+            toast('As senhas estão diferentes');
             return;
         }
-    
+
         try {
             // Certifique-se de que o corpo da requisição está sendo enviado corretamente
             const response = await fetch('http://localhost:5000/api/register', {
@@ -60,20 +80,24 @@ export default function SingUp() {
                     password: formDataState.password,
                 }),
             });
-    
+
             if (response.ok) {
-                alert('Usuário registrado com sucesso!');
+                toast('Usuário registrado com sucesso!');
+                clearFields()
             } else {
                 const errorData = await response.json();
-                alert(`Erro: ${errorData.error || 'Erro desconhecido'}`);
+                toast(`Erro: ${errorData.error || 'Erro desconhecido'}`);
+                clearFields()
             }
         } catch (error) {
             // Adiciona mais logs para depuração
             console.error("Erro ao conectar com o backend", error);
             if (error instanceof Error) {
-                alert(`Erro ao conectar com o backend: ${error.message}`);
+                toast(`Erro ao conectar com o backend: ${error.message}`);
+                clearFields()
             } else {
-                alert(`Erro desconhecido: ${String(error)}`);
+                toast(`Erro desconhecido: ${String(error)}`);
+                clearFields()
             }
         }
     };
@@ -81,6 +105,7 @@ export default function SingUp() {
 
     return (
         <div className="bg-blue-light h-screen">
+            <Toaster />
             <main className="mx-16">
                 <ul className="flex justify-between">
                     <li>
@@ -153,7 +178,12 @@ export default function SingUp() {
                         </p>
 
                         <motion.a className="cursor-pointer flex justify-center mt-4" whileHover={{ scale: 1.1 }}>
-                            <Image src={google} alt="Google Login" height={50} width={50} />
+                            <GoogleOAuthProvider clientId="620987113282-5ei8hdognh4142u4tmj6s1uef5gvuevm.apps.googleusercontent.com">
+                                <GoogleLogin
+                                    onSuccess={sucess}
+                                    onError={error}
+                                />
+                            </GoogleOAuthProvider>
                         </motion.a>
                     </li>
                 </ul>
