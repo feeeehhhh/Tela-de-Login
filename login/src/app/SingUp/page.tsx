@@ -67,7 +67,7 @@ export default function SingUp() {
         }
 
         try {
-            // Certifique-se de que o corpo da requisição está sendo enviado corretamente
+            
             const response = await fetch('http://localhost:5000/api/register', {
                 method: 'POST',
                 headers: {
@@ -90,7 +90,7 @@ export default function SingUp() {
                 clearFields()
             }
         } catch (error) {
-            // Adiciona mais logs para depuração
+            
             console.error("Erro ao conectar com o backend", error);
             if (error instanceof Error) {
                 toast(`Erro ao conectar com o backend: ${error.message}`);
